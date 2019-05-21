@@ -58,12 +58,14 @@ Skeleton::Skeleton()
 	rightCalf[0] = -0.07;
 	rightCalf[1] = -0.12;
 	rightCalf[2] = 0;
-	cameraHorizontalSpeed = 1.0;
+	cameraHorizontalSpeed = 2.0;
 	leftUpperArmAngle = 0;
 	leftLowerArmAngle = 0;
 	rightUpperArmAngle = 0;
 	rightLowerArmAngle = 0;
-	armFlag = true;
+	walkStep = 5;
+	walkFlag = true;
+	walkSpeed = -0.001;
 }
 
 
@@ -259,7 +261,9 @@ void Skeleton::drawRightHip()
 void Skeleton::drawLeftThigh()
 {
 	glPushMatrix();
-	glTranslated(leftThigh[0], leftThigh[1], leftThigh[2]);
+	glTranslated(leftHip[0], leftHip[1], leftHip[2]);
+	glRotated(leftThighAngle, 1.0, 0.0, 0.0);
+	glTranslated(leftThigh[0] - leftHip[0], leftThigh[1] - leftHip[1], leftThigh[2] - leftHip[2]);
 	glRotated(90.0, 1.0, 0.0, 0.0);
 	GLUquadricObj* objCylinder = gluNewQuadric();
 	gluCylinder(objCylinder, 0.012, 0.012, 0.22, 100, 100);
@@ -269,7 +273,9 @@ void Skeleton::drawLeftThigh()
 void Skeleton::drawRightThigh()
 {
 	glPushMatrix();
-	glTranslated(rightThigh[0], rightThigh[1], rightThigh[2]);
+	glTranslated(rightHip[0], rightHip[1], rightHip[2]);
+	glRotated(rightThighAngle, 1.0, 0.0, 0.0);
+	glTranslated(rightThigh[0] - rightHip[0], rightThigh[1] - rightHip[1], rightThigh[2] - rightHip[2]);
 	glRotated(90.0, 1.0, 0.0, 0.0);
 	GLUquadricObj* objCylinder = gluNewQuadric();
 	gluCylinder(objCylinder, 0.012, 0.012, 0.22, 100, 100);
@@ -279,7 +285,9 @@ void Skeleton::drawRightThigh()
 void Skeleton::drawLeftKnee()
 {
 	glPushMatrix();
-	glTranslated(leftKnee[0], leftKnee[1], leftKnee[2]);
+	glTranslated(leftHip[0], leftHip[1], leftHip[2]);
+	glRotated(leftThighAngle, 1.0, 0.0, 0.0);
+	glTranslated(leftKnee[0] - leftHip[0], leftKnee[1] - leftHip[1], leftKnee[2] - leftHip[2]);
 	glutSolidSphere(0.025, 100, 100);
 	glPopMatrix();
 }
@@ -287,7 +295,9 @@ void Skeleton::drawLeftKnee()
 void Skeleton::drawRightKnee()
 {
 	glPushMatrix();
-	glTranslated(rightKnee[0], rightKnee[1], rightKnee[2]);
+	glTranslated(rightHip[0], rightHip[1], rightHip[2]);
+	glRotated(rightThighAngle, 1.0, 0.0, 0.0);
+	glTranslated(rightKnee[0] - rightHip[0], rightKnee[1] - rightHip[1], rightKnee[2] - rightHip[2]);
 	glutSolidSphere(0.025, 100, 100);
 	glPopMatrix();
 }
@@ -295,7 +305,11 @@ void Skeleton::drawRightKnee()
 void Skeleton::drawLeftCalf()
 {
 	glPushMatrix();
-	glTranslated(leftCalf[0], leftCalf[1], leftCalf[2]);
+	glTranslated(leftHip[0], leftHip[1], leftHip[2]);
+	glRotated(leftThighAngle, 1.0, 0.0, 0.0);
+	glTranslated(leftKnee[0] - leftHip[0], leftKnee[1] - leftHip[1], leftKnee[2] - leftHip[2]);
+	glRotated(leftCalfAngle, 1.0, 0.0, 0.0);
+	glTranslated(leftCalf[0] - leftKnee[0], leftCalf[1] - leftKnee[1], leftCalf[2] - leftKnee[2]);
 	glRotated(90.0, 1.0, 0.0, 0.0);
 	GLUquadricObj* objCylinder = gluNewQuadric();
 	gluCylinder(objCylinder, 0.012, 0.012, 0.32, 100, 100);
@@ -305,7 +319,11 @@ void Skeleton::drawLeftCalf()
 void Skeleton::drawRightCalf()
 {
 	glPushMatrix();
-	glTranslated(rightCalf[0], rightCalf[1], rightCalf[2]);
+	glTranslated(rightHip[0], rightHip[1], rightHip[2]);
+	glRotated(rightThighAngle, 1.0, 0.0, 0.0);
+	glTranslated(rightKnee[0] - rightHip[0], rightKnee[1] - rightHip[1], rightKnee[2] - rightHip[2]);
+	glRotated(rightCalfAngle, 1.0, 0.0, 0.0);
+	glTranslated(rightCalf[0] - rightKnee[0], rightCalf[1] - rightKnee[1], rightCalf[2] - rightKnee[2]);
 	glRotated(90.0, 1.0, 0.0, 0.0);
 	GLUquadricObj* objCylinder = gluNewQuadric();
 	gluCylinder(objCylinder, 0.012, 0.012, 0.32, 100, 100);
@@ -356,7 +374,9 @@ void Skeleton::moveCameraRight()
 
 void Skeleton::walk()
 {
-	if (armFlag) {
+	//  ÷±€∂Øª≠
+	glTranslated(0.0, 0.0, walkSpeed);
+	if (walkFlag) {
 		leftUpperArmAngle += 8;
 		rightUpperArmAngle -= 8;
 		if (leftUpperArmAngle <= 40 && leftUpperArmAngle > 0) {
@@ -364,9 +384,6 @@ void Skeleton::walk()
 		}
 		else {
 			rightLowerArmAngle -= 10;
-		}
-		if (leftUpperArmAngle >= 40) {
-			armFlag = false;
 		}
 	}
 	else {
@@ -378,8 +395,122 @@ void Skeleton::walk()
 		else {
 			rightLowerArmAngle += 10;
 		}
-		if (leftUpperArmAngle <= -40) {
-			armFlag = true;
+	}
+	switch (walkStep)
+	{
+	case 0:
+		leftThighAngle += 5;
+		rightThighAngle -= 5;
+		leftCalfAngle -= 5;
+		walkFlag = true;
+		break;
+	case 1:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+			leftCalfAngle -= 5;
 		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+		}
+		break;
+	case 2:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+		}
+		break;
+	case 3:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+		}
+		break;
+	case 4:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			leftCalfAngle = 0;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+		}
+		break;
+	case 5:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+		}
+		break;
+	case 6:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+			rightCalfAngle = 0;
+		}
+		break;
+	case 7:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+		}
+		break;
+	case 8:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+		}
+		break;
+	case 9:
+		if (walkFlag) {
+			leftThighAngle += 5;
+			rightThighAngle -= 5;
+		}
+		else {
+			leftThighAngle -= 5;
+			rightThighAngle += 5;
+			rightCalfAngle -= 5;
+		}
+		break;
+	case 10:
+		leftThighAngle -= 5;
+		rightThighAngle += 5;
+		rightCalfAngle -= 5;
+		walkFlag = false;
+		break;
+	default:
+		break;
+	}
+	if (walkFlag) {
+		walkStep++;
+	}
+	else {
+		walkStep--;    
 	}
 }

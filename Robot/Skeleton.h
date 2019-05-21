@@ -1,5 +1,7 @@
 #pragma once
 #include <GL/glut.h>
+#include <iostream>
+using namespace std;
 class Skeleton
 {
 public:
@@ -63,8 +65,10 @@ private:
 	GLdouble rightLowerArmAngle;
 	GLdouble leftThighAngle;
 	GLdouble rightThighAngle;
-	GLdouble leftTCalfAngle;
+	GLdouble leftCalfAngle;
 	GLdouble rightCalfAngle;
-	bool armFlag;
+	int walkStep;
+	bool walkFlag;
+	GLdouble walkSpeed;
 };
 

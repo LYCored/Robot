@@ -2,8 +2,6 @@
 #include <ctime>
 #include "Skeleton.h"
 
-#define PI 3.1415926
-
 using namespace std;
 
 const int windowWidth = 800;
@@ -117,7 +115,6 @@ void normalKeyCallback(unsigned char key, int x, int y) {
 	case 't':
 		drawer.walk();
 		glutPostRedisplay();
-		cout << "test";
 		break;
 	default:
 		break;
